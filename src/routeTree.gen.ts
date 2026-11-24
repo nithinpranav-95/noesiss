@@ -10,33 +10,232 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BaselineRouteImport } from './routes/baseline'
+import { Route as FeedbackRouteImport } from './routes/feedback'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as PlanRouteImport } from './routes/plan'
+import { Route as ProgressRouteImport } from './routes/progress'
+import { Route as DebateIndexRouteImport } from './routes/debate.index'
+import { Route as DebateLiveRouteImport } from './routes/debate.live'
+import { Route as GamesIndexRouteImport } from './routes/games.index'
+import { Route as GamesChartTrapsRouteImport } from './routes/games.chart-traps'
+import { Route as GamesEvidenceRouteImport } from './routes/games.evidence'
+import { Route as GamesHeadlinesRouteImport } from './routes/games.headlines'
+import { Route as GamesPatternsRouteImport } from './routes/games.patterns'
+import { Route as LearnIndexRouteImport } from './routes/learn.index'
+import { Route as LearnFrameworkIdRouteImport } from './routes/learn.$frameworkId'
+import { Route as SettingsNotificationsRouteImport } from './routes/settings.notifications'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BaselineRoute = BaselineRouteImport.update({
+  id: '/baseline',
+  path: '/baseline',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedbackRoute = FeedbackRouteImport.update({
+  id: '/feedback',
+  path: '/feedback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanRoute = PlanRouteImport.update({
+  id: '/plan',
+  path: '/plan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgressRoute = ProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DebateIndexRoute = DebateIndexRouteImport.update({
+  id: '/debate/',
+  path: '/debate/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DebateLiveRoute = DebateLiveRouteImport.update({
+  id: '/debate/live',
+  path: '/debate/live',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GamesIndexRoute = GamesIndexRouteImport.update({
+  id: '/games/',
+  path: '/games/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GamesChartTrapsRoute = GamesChartTrapsRouteImport.update({
+  id: '/games/chart-traps',
+  path: '/games/chart-traps',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GamesEvidenceRoute = GamesEvidenceRouteImport.update({
+  id: '/games/evidence',
+  path: '/games/evidence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GamesHeadlinesRoute = GamesHeadlinesRouteImport.update({
+  id: '/games/headlines',
+  path: '/games/headlines',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GamesPatternsRoute = GamesPatternsRouteImport.update({
+  id: '/games/patterns',
+  path: '/games/patterns',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnIndexRoute = LearnIndexRouteImport.update({
+  id: '/learn/',
+  path: '/learn/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnFrameworkIdRoute = LearnFrameworkIdRouteImport.update({
+  id: '/learn/$frameworkId',
+  path: '/learn/$frameworkId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsNotificationsRoute = SettingsNotificationsRouteImport.update({
+  id: '/settings/notifications',
+  path: '/settings/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/baseline': typeof BaselineRoute
+  '/feedback': typeof FeedbackRoute
+  '/onboarding': typeof OnboardingRoute
+  '/plan': typeof PlanRoute
+  '/progress': typeof ProgressRoute
+  '/debate/live': typeof DebateLiveRoute
+  '/games/chart-traps': typeof GamesChartTrapsRoute
+  '/games/evidence': typeof GamesEvidenceRoute
+  '/games/headlines': typeof GamesHeadlinesRoute
+  '/games/patterns': typeof GamesPatternsRoute
+  '/learn/$frameworkId': typeof LearnFrameworkIdRoute
+  '/settings/notifications': typeof SettingsNotificationsRoute
+  '/debate/': typeof DebateIndexRoute
+  '/games/': typeof GamesIndexRoute
+  '/learn/': typeof LearnIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/baseline': typeof BaselineRoute
+  '/feedback': typeof FeedbackRoute
+  '/onboarding': typeof OnboardingRoute
+  '/plan': typeof PlanRoute
+  '/progress': typeof ProgressRoute
+  '/debate/live': typeof DebateLiveRoute
+  '/games/chart-traps': typeof GamesChartTrapsRoute
+  '/games/evidence': typeof GamesEvidenceRoute
+  '/games/headlines': typeof GamesHeadlinesRoute
+  '/games/patterns': typeof GamesPatternsRoute
+  '/learn/$frameworkId': typeof LearnFrameworkIdRoute
+  '/settings/notifications': typeof SettingsNotificationsRoute
+  '/debate': typeof DebateIndexRoute
+  '/games': typeof GamesIndexRoute
+  '/learn': typeof LearnIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/baseline': typeof BaselineRoute
+  '/feedback': typeof FeedbackRoute
+  '/onboarding': typeof OnboardingRoute
+  '/plan': typeof PlanRoute
+  '/progress': typeof ProgressRoute
+  '/debate/live': typeof DebateLiveRoute
+  '/games/chart-traps': typeof GamesChartTrapsRoute
+  '/games/evidence': typeof GamesEvidenceRoute
+  '/games/headlines': typeof GamesHeadlinesRoute
+  '/games/patterns': typeof GamesPatternsRoute
+  '/learn/$frameworkId': typeof LearnFrameworkIdRoute
+  '/settings/notifications': typeof SettingsNotificationsRoute
+  '/debate/': typeof DebateIndexRoute
+  '/games/': typeof GamesIndexRoute
+  '/learn/': typeof LearnIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/baseline'
+    | '/feedback'
+    | '/onboarding'
+    | '/plan'
+    | '/progress'
+    | '/debate/live'
+    | '/games/chart-traps'
+    | '/games/evidence'
+    | '/games/headlines'
+    | '/games/patterns'
+    | '/learn/$frameworkId'
+    | '/settings/notifications'
+    | '/debate/'
+    | '/games/'
+    | '/learn/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/baseline'
+    | '/feedback'
+    | '/onboarding'
+    | '/plan'
+    | '/progress'
+    | '/debate/live'
+    | '/games/chart-traps'
+    | '/games/evidence'
+    | '/games/headlines'
+    | '/games/patterns'
+    | '/learn/$frameworkId'
+    | '/settings/notifications'
+    | '/debate'
+    | '/games'
+    | '/learn'
+  id:
+    | '__root__'
+    | '/'
+    | '/baseline'
+    | '/feedback'
+    | '/onboarding'
+    | '/plan'
+    | '/progress'
+    | '/debate/live'
+    | '/games/chart-traps'
+    | '/games/evidence'
+    | '/games/headlines'
+    | '/games/patterns'
+    | '/learn/$frameworkId'
+    | '/settings/notifications'
+    | '/debate/'
+    | '/games/'
+    | '/learn/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BaselineRoute: typeof BaselineRoute
+  FeedbackRoute: typeof FeedbackRoute
+  OnboardingRoute: typeof OnboardingRoute
+  PlanRoute: typeof PlanRoute
+  ProgressRoute: typeof ProgressRoute
+  DebateLiveRoute: typeof DebateLiveRoute
+  GamesChartTrapsRoute: typeof GamesChartTrapsRoute
+  GamesEvidenceRoute: typeof GamesEvidenceRoute
+  GamesHeadlinesRoute: typeof GamesHeadlinesRoute
+  GamesPatternsRoute: typeof GamesPatternsRoute
+  LearnFrameworkIdRoute: typeof LearnFrameworkIdRoute
+  SettingsNotificationsRoute: typeof SettingsNotificationsRoute
+  DebateIndexRoute: typeof DebateIndexRoute
+  GamesIndexRoute: typeof GamesIndexRoute
+  LearnIndexRoute: typeof LearnIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +247,131 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/baseline': {
+      id: '/baseline'
+      path: '/baseline'
+      fullPath: '/baseline'
+      preLoaderRoute: typeof BaselineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/feedback': {
+      id: '/feedback'
+      path: '/feedback'
+      fullPath: '/feedback'
+      preLoaderRoute: typeof FeedbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plan': {
+      id: '/plan'
+      path: '/plan'
+      fullPath: '/plan'
+      preLoaderRoute: typeof PlanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/progress': {
+      id: '/progress'
+      path: '/progress'
+      fullPath: '/progress'
+      preLoaderRoute: typeof ProgressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/debate/': {
+      id: '/debate/'
+      path: '/debate'
+      fullPath: '/debate/'
+      preLoaderRoute: typeof DebateIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/debate/live': {
+      id: '/debate/live'
+      path: '/debate/live'
+      fullPath: '/debate/live'
+      preLoaderRoute: typeof DebateLiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/games/': {
+      id: '/games/'
+      path: '/games'
+      fullPath: '/games/'
+      preLoaderRoute: typeof GamesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/games/chart-traps': {
+      id: '/games/chart-traps'
+      path: '/games/chart-traps'
+      fullPath: '/games/chart-traps'
+      preLoaderRoute: typeof GamesChartTrapsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/games/evidence': {
+      id: '/games/evidence'
+      path: '/games/evidence'
+      fullPath: '/games/evidence'
+      preLoaderRoute: typeof GamesEvidenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/games/headlines': {
+      id: '/games/headlines'
+      path: '/games/headlines'
+      fullPath: '/games/headlines'
+      preLoaderRoute: typeof GamesHeadlinesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/games/patterns': {
+      id: '/games/patterns'
+      path: '/games/patterns'
+      fullPath: '/games/patterns'
+      preLoaderRoute: typeof GamesPatternsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/': {
+      id: '/learn/'
+      path: '/learn'
+      fullPath: '/learn/'
+      preLoaderRoute: typeof LearnIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/$frameworkId': {
+      id: '/learn/$frameworkId'
+      path: '/learn/$frameworkId'
+      fullPath: '/learn/$frameworkId'
+      preLoaderRoute: typeof LearnFrameworkIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/notifications': {
+      id: '/settings/notifications'
+      path: '/settings/notifications'
+      fullPath: '/settings/notifications'
+      preLoaderRoute: typeof SettingsNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BaselineRoute: BaselineRoute,
+  FeedbackRoute: FeedbackRoute,
+  OnboardingRoute: OnboardingRoute,
+  PlanRoute: PlanRoute,
+  ProgressRoute: ProgressRoute,
+  DebateLiveRoute: DebateLiveRoute,
+  GamesChartTrapsRoute: GamesChartTrapsRoute,
+  GamesEvidenceRoute: GamesEvidenceRoute,
+  GamesHeadlinesRoute: GamesHeadlinesRoute,
+  GamesPatternsRoute: GamesPatternsRoute,
+  LearnFrameworkIdRoute: LearnFrameworkIdRoute,
+  SettingsNotificationsRoute: SettingsNotificationsRoute,
+  DebateIndexRoute: DebateIndexRoute,
+  GamesIndexRoute: GamesIndexRoute,
+  LearnIndexRoute: LearnIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

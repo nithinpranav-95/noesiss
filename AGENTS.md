@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- All UI reads mock content from `src/lib/mock-data.ts`; swap to database reads per screen later. Why: the shell was built UI-first.
+- `startDebate`, `submitTurn`, `getFeedback` live in `src/lib/placeholders.ts` as stubs; voice, AI and scoring must replace them there, not inline in routes. Why: one seam for backend work.
+- Content tables are public-read; user tables are scoped to `auth.uid()` via RLS (scores/fallacy_events through their session). Why: content is shared, progress is private.
