@@ -15,7 +15,7 @@ export function AppNav() {
   return (
     <>
       <aside className="hidden md:flex fixed inset-y-0 left-0 w-60 flex-col border-r bg-sidebar px-4 py-6">
-        <Link to="/" className="mb-1 px-2 font-display text-2xl font-semibold">Thinkwell<span className="text-primary">.</span></Link>
+        <Link to="/" className="mb-1 px-2 font-display text-2xl font-semibold">Noesis<span className="text-primary">.</span></Link>
         <p className="mb-7 px-2 text-xs text-muted-foreground">Solve clearly. Decide wisely.</p>
         <nav className="flex flex-col gap-1">
           {navItems.map(({ to, label, icon: Icon }) => (

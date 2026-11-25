@@ -16,7 +16,7 @@ export const Route = createFileRoute("/learn/$frameworkId")({
     return f;
   },
   head: ({ loaderData }) => {
-    const t = loaderData ? `${loaderData.name} lesson — Thinkwell` : "Lesson — Thinkwell";
+    const t = loaderData ? `${loaderData.name} lesson — Noesis` : "Lesson — Noesis";
     const d = loaderData?.definition ?? "Problem-solving technique lesson";
     return { meta: [
       { title: t }, { name: "description", content: d },

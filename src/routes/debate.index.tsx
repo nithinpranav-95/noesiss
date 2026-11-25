@@ -13,9 +13,9 @@ import { startDebate, type DebateConfig } from "@/lib/placeholders";
 
 export const Route = createFileRoute("/debate/")({
   head: () => ({ meta: [
-    { title: "Optional debate — Thinkwell" },
+    { title: "Optional debate — Noesis" },
     { name: "description", content: "Apply your problem-solving skills in an optional structured debate." },
-    { property: "og:title", content: "Optional debate — Thinkwell" },
+    { property: "og:title", content: "Optional debate — Noesis" },
     { property: "og:description", content: "Apply your problem-solving skills in an optional structured debate." },
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
   ] }),

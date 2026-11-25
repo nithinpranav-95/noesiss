@@ -6,9 +6,9 @@ import { todaysSession } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [
-    { title: "Home — Thinkwell" },
+    { title: "Home — Noesis" },
     { name: "description", content: "Build practical problem-solving skills with daily challenges, techniques and reasoning games." },
-    { property: "og:title", content: "Home — Thinkwell" },
+    { property: "og:title", content: "Home — Noesis" },
     { property: "og:description", content: "Build practical problem-solving skills with daily challenges, techniques and reasoning games." },
     { property: "og:type", content: "website" },
     { name: "twitter:card", content: "summary" },

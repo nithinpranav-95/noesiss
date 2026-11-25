@@ -17,9 +17,9 @@ export const Route = createFileRoute("/debate/live")({
     side: s["side"] === "against" ? "against" : "for",
   }),
   head: () => ({ meta: [
-    { title: "Live debate — Thinkwell" },
+    { title: "Live debate — Noesis" },
     { name: "description", content: "Your optional live debate session with transcript and timer." },
-    { property: "og:title", content: "Live debate — Thinkwell" },
+    { property: "og:title", content: "Live debate — Noesis" },
     { property: "og:description", content: "Your optional live debate session with transcript and timer." },
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
   ] }),
