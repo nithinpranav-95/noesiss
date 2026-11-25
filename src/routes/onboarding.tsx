@@ -8,9 +8,9 @@ import { Progress } from "@/components/ui/progress";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { meta } from "@/components/app/GameShell";
 
-export const Route = createFileRoute("/onboarding")({ head: () => meta("Welcome", "Set up your debate training profile."), component: Onboarding });
+export const Route = createFileRoute("/onboarding")({ head: () => meta("Welcome", "Set up your practical problem-solving training profile."), component: Onboarding });
 
-const goals = ["School debates", "Work meetings", "Interviews", "Everyday arguments", "Critical thinking"];
+const goals = ["Study & exams", "Work challenges", "Better decisions", "Everyday problems", "Clearer communication", "Optional debate practice"];
 
 function Onboarding() {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ function Onboarding() {
   const [minutes, setMinutes] = useState("10");
   const steps = [
     <div key="n" className="space-y-3"><h1 className="text-3xl font-semibold">What should we call you?</h1><Label htmlFor="name">Name</Label><Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Nithin" /></div>,
-    <div key="g" className="space-y-3"><h1 className="text-3xl font-semibold">What are you training for?</h1>
+    <div key="g" className="space-y-3"><h1 className="text-3xl font-semibold">Where do you want to solve problems better?</h1><p className="text-sm text-muted-foreground">Pick any that apply. Your plan will emphasise practical techniques before debate.</p>
       <ToggleGroup type="multiple" variant="outline" value={picked} onValueChange={setPicked} className="flex-wrap justify-start">{goals.map((g) => <ToggleGroupItem key={g} value={g}>{g}</ToggleGroupItem>)}</ToggleGroup></div>,
     <div key="t" className="space-y-3"><h1 className="text-3xl font-semibold">How long per day?</h1>
       <ToggleGroup type="single" variant="outline" value={minutes} onValueChange={(v) => v && setMinutes(v)} className="justify-start">{["5", "10", "20"].map((m) => <ToggleGroupItem key={m} value={m} className="px-6">{m} min</ToggleGroupItem>)}</ToggleGroup></div>,

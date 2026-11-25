@@ -7,12 +7,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { meta } from "@/components/app/GameShell";
 
-export const Route = createFileRoute("/baseline")({ head: () => meta("Baseline assessment", "A short assessment to tailor your training plan."), component: Baseline });
+export const Route = createFileRoute("/baseline")({ head: () => meta("Baseline assessment", "A short assessment to tailor your problem-solving practice."), component: Baseline });
 
 const qs = [
-  { q: "“If we let students use calculators, soon they won't learn anything.” Which fallacy is this?", opts: ["Slippery slope", "Straw man", "Ad hominem"] },
-  { q: "Which best supports the claim “bike lanes reduce injuries”?", opts: ["A cyclist's opinion", "City injury data before and after lanes", "A popular tweet"] },
-  { q: "Your opponent makes a strong point. What's the best first move?", opts: ["Change the subject", "Restate it fairly, then respond", "Question their motives"] },
+  { q: "A team keeps missing deadlines. What is the best first step?", opts: ["Choose a solution quickly", "Define exactly where and when the delays happen", "Ask for a bigger team"] },
+  { q: "Two changes happened at the same time as sales rose. What should you conclude?", opts: ["The first change caused the rise", "Both changes caused the rise", "More evidence is needed before assigning cause"] },
+  { q: "You have spent months on a plan that no longer looks worthwhile. What matters most now?", opts: ["The time already spent", "The future costs and benefits of each option", "Whether others will criticise the decision"] },
+  { q: "A problem feels too broad to investigate. Which technique should you try first?", opts: ["Break it into distinct branches with an issue tree", "Pick the first available answer", "Avoid it until more information arrives"] },
 ];
 
 function Baseline() {

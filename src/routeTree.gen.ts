@@ -14,6 +14,7 @@ import { Route as BaselineRouteImport } from './routes/baseline'
 import { Route as FeedbackRouteImport } from './routes/feedback'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PlanRouteImport } from './routes/plan'
+import { Route as PracticeRouteImport } from './routes/practice'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as DebateIndexRouteImport } from './routes/debate.index'
 import { Route as DebateLiveRouteImport } from './routes/debate.live'
@@ -49,6 +50,11 @@ const OnboardingRoute = OnboardingRouteImport.update({
 const PlanRoute = PlanRouteImport.update({
   id: '/plan',
   path: '/plan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PracticeRoute = PracticeRouteImport.update({
+  id: '/practice',
+  path: '/practice',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProgressRoute = ProgressRouteImport.update({
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/feedback': typeof FeedbackRoute
   '/onboarding': typeof OnboardingRoute
   '/plan': typeof PlanRoute
+  '/practice': typeof PracticeRoute
   '/progress': typeof ProgressRoute
   '/debate/live': typeof DebateLiveRoute
   '/games/chart-traps': typeof GamesChartTrapsRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/feedback': typeof FeedbackRoute
   '/onboarding': typeof OnboardingRoute
   '/plan': typeof PlanRoute
+  '/practice': typeof PracticeRoute
   '/progress': typeof ProgressRoute
   '/debate/live': typeof DebateLiveRoute
   '/games/chart-traps': typeof GamesChartTrapsRoute
@@ -150,6 +158,7 @@ export interface FileRoutesById {
   '/feedback': typeof FeedbackRoute
   '/onboarding': typeof OnboardingRoute
   '/plan': typeof PlanRoute
+  '/practice': typeof PracticeRoute
   '/progress': typeof ProgressRoute
   '/debate/live': typeof DebateLiveRoute
   '/games/chart-traps': typeof GamesChartTrapsRoute
@@ -170,6 +179,7 @@ export interface FileRouteTypes {
     | '/feedback'
     | '/onboarding'
     | '/plan'
+    | '/practice'
     | '/progress'
     | '/debate/live'
     | '/games/chart-traps'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/feedback'
     | '/onboarding'
     | '/plan'
+    | '/practice'
     | '/progress'
     | '/debate/live'
     | '/games/chart-traps'
@@ -206,6 +217,7 @@ export interface FileRouteTypes {
     | '/feedback'
     | '/onboarding'
     | '/plan'
+    | '/practice'
     | '/progress'
     | '/debate/live'
     | '/games/chart-traps'
@@ -225,6 +237,7 @@ export interface RootRouteChildren {
   FeedbackRoute: typeof FeedbackRoute
   OnboardingRoute: typeof OnboardingRoute
   PlanRoute: typeof PlanRoute
+  PracticeRoute: typeof PracticeRoute
   ProgressRoute: typeof ProgressRoute
   DebateLiveRoute: typeof DebateLiveRoute
   GamesChartTrapsRoute: typeof GamesChartTrapsRoute
@@ -273,6 +286,13 @@ declare module '@tanstack/react-router' {
       path: '/plan'
       fullPath: '/plan'
       preLoaderRoute: typeof PlanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/practice': {
+      id: '/practice'
+      path: '/practice'
+      fullPath: '/practice'
+      preLoaderRoute: typeof PracticeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/progress': {
@@ -361,6 +381,7 @@ const rootRouteChildren: RootRouteChildren = {
   FeedbackRoute: FeedbackRoute,
   OnboardingRoute: OnboardingRoute,
   PlanRoute: PlanRoute,
+  PracticeRoute: PracticeRoute,
   ProgressRoute: ProgressRoute,
   DebateLiveRoute: DebateLiveRoute,
   GamesChartTrapsRoute: GamesChartTrapsRoute,

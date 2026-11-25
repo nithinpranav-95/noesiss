@@ -26,8 +26,8 @@ export async function getFeedback(_sessionId: string): Promise<Feedback> {
   return {
     scores: { clarity: 3.5, evidence: 2.5, logic: 3, counterarguments: 2, adaptability: 3, overall: 2.8 },
     fallacies: [
-      { fallacyId: fallacies[0]!.id, quote: "So you're saying nobody should ever pay for anything?" },
-      { fallacyId: fallacies[2]!.id, quote: "Either it's free or nobody will ride it." },
+      { fallacyId: fallacies.find((f) => f.id === "strawman")!.id, quote: "So you're saying nobody should ever pay for anything?" },
+      { fallacyId: fallacies.find((f) => f.id === "false-dilemma")!.id, quote: "Either it's free or nobody will ride it." },
     ],
     bestMoment: "Round 2: you cited ridership numbers from Tallinn and tied them back to your main claim.",
     focusNext: "Steelman your opponent before rebutting — address their strongest point, not the weakest.",

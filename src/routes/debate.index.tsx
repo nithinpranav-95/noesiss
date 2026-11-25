@@ -13,10 +13,11 @@ import { startDebate, type DebateConfig } from "@/lib/placeholders";
 
 export const Route = createFileRoute("/debate/")({
   head: () => ({ meta: [
-    { title: "Debate setup — Rebuttal" },
-    { name: "description", content: "Pick a motion, side and difficulty for your next debate." },
-    { property: "og:title", content: "Debate setup — Rebuttal" },
-    { property: "og:description", content: "Pick a motion, side and difficulty for your next debate." },
+    { title: "Optional debate — Thinkwell" },
+    { name: "description", content: "Apply your problem-solving skills in an optional structured debate." },
+    { property: "og:title", content: "Optional debate — Thinkwell" },
+    { property: "og:description", content: "Apply your problem-solving skills in an optional structured debate." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
   ] }),
   component: DebateSetup,
 });

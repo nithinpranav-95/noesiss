@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { meta } from "@/components/app/GameShell";
 
-export const Route = createFileRoute("/settings/notifications")({ head: () => meta("Notifications", "Choose when Rebuttal reminds you to practise."), component: Notifications });
+export const Route = createFileRoute("/settings/notifications")({ head: () => meta("Notifications", "Choose when Thinkwell reminds you to practise problem-solving."), component: Notifications });
 
 function Notifications() {
   const [s, setS] = useState({ daily: true, streak: true, weekly: false, newContent: false });

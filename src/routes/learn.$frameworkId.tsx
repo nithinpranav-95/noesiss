@@ -16,9 +16,13 @@ export const Route = createFileRoute("/learn/$frameworkId")({
     return f;
   },
   head: ({ loaderData }) => {
-    const t = loaderData ? `${loaderData.name} lesson — Rebuttal` : "Lesson — Rebuttal";
-    const d = loaderData?.definition ?? "Framework lesson";
-    return { meta: [{ title: t }, { name: "description", content: d }, { property: "og:title", content: t }, { property: "og:description", content: d }] };
+    const t = loaderData ? `${loaderData.name} lesson — Thinkwell` : "Lesson — Thinkwell";
+    const d = loaderData?.definition ?? "Problem-solving technique lesson";
+    return { meta: [
+      { title: t }, { name: "description", content: d },
+      { property: "og:title", content: t }, { property: "og:description", content: d },
+      { property: "og:type", content: "article" }, { name: "twitter:card", content: "summary" },
+    ] };
   },
   component: Lesson,
 });

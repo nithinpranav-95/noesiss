@@ -11,10 +11,11 @@ import { getFeedback, type Feedback } from "@/lib/placeholders";
 export const Route = createFileRoute("/feedback")({
   validateSearch: (s: Record<string, unknown>): { session: string } => ({ session: String(s["session"] ?? "mock") }),
   head: () => ({ meta: [
-    { title: "Feedback — Rebuttal" },
-    { name: "description", content: "Scores, fallacies and focus areas from your session." },
-    { property: "og:title", content: "Feedback — Rebuttal" },
-    { property: "og:description", content: "Scores, fallacies and focus areas from your session." },
+    { title: "Debate feedback — Thinkwell" },
+    { name: "description", content: "Scores, reasoning traps and focus areas from your optional debate." },
+    { property: "og:title", content: "Debate feedback — Thinkwell" },
+    { property: "og:description", content: "Scores, reasoning traps and focus areas from your optional debate." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
   ] }),
   component: FeedbackCard,
 });
