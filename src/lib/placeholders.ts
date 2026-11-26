@@ -11,19 +11,19 @@ export type Feedback = {
   focusNext: string;
 };
 
-export type ProblemLabFeedback = {
+export type ProblemLabLlmFeedback = {
   score: number;
   strengths: string[];
   focusNext: string;
   nextPractice: string;
 };
 
-/** Learning feedback seam. Replace the evaluator body with the server-side AI coach. */
-export async function getProblemLabFeedback(input: {
+/** LLM feedback seam. Replace the evaluator body with the server-side LLM coach. */
+export async function getProblemLabLlmFeedback(input: {
   correct: number;
   total: number;
   techniques: string[];
-}): Promise<ProblemLabFeedback> {
+}): Promise<ProblemLabLlmFeedback> {
   const score = Math.round((input.correct / Math.max(input.total, 1)) * 5 * 10) / 10;
   const strengths = input.correct > 0
     ? [`You made ${input.correct} evidence-based choice${input.correct === 1 ? "" : "s"}.`, `You practised ${input.techniques.join(", ")}.`]

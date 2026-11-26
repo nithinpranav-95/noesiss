@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { meta } from "@/components/app/GameShell";
-import { getProblemLabFeedback, type ProblemLabFeedback } from "@/lib/placeholders";
+import { getProblemLabLlmFeedback, type ProblemLabLlmFeedback } from "@/lib/placeholders";
 
 export const Route = createFileRoute("/practice")({
   head: () => meta("Problem lab", "Practise defining problems, finding causes and choosing sensible next steps."),
@@ -56,7 +56,7 @@ function ProblemLab() {
   const [picked, setPicked] = useState<number | null>(null);
   const [correct, setCorrect] = useState(0);
   const [complete, setComplete] = useState(false);
-  const [feedback, setFeedback] = useState<ProblemLabFeedback | null>(null);
+  const [feedback, setFeedback] = useState<ProblemLabLlmFeedback | null>(null);
   const [loadingFeedback, setLoadingFeedback] = useState(false);
   const challenge = challenges[challengeIndex]!;
   const step = challenge.steps[stepIndex]!;
@@ -71,7 +71,7 @@ function ProblemLab() {
     if (stepIndex === challenge.steps.length - 1) {
       setComplete(true);
       setLoadingFeedback(true);
-      const result = await getProblemLabFeedback({ correct: correct + (picked === step.answer ? 1 : 0), total: challenge.steps.length, techniques: challenge.steps.map((item) => item.technique) });
+      const result = await getProblemLabLlmFeedback({ correct: correct + (picked === step.answer ? 1 : 0), total: challenge.steps.length, techniques: challenge.steps.map((item) => item.technique) });
       setFeedback(result);
       setLoadingFeedback(false);
     }
