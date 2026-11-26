@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { meta } from "@/components/app/GameShell";
+import { getProblemLabFeedback, type ProblemLabFeedback } from "@/lib/placeholders";
 
 export const Route = createFileRoute("/practice")({
   head: () => meta("Problem lab", "Practise defining problems, finding causes and choosing sensible next steps."),
@@ -55,6 +56,8 @@ function ProblemLab() {
   const [picked, setPicked] = useState<number | null>(null);
   const [correct, setCorrect] = useState(0);
   const [complete, setComplete] = useState(false);
+  const [feedback, setFeedback] = useState<ProblemLabFeedback | null>(null);
+  const [loadingFeedback, setLoadingFeedback] = useState(false);
   const challenge = challenges[challengeIndex]!;
   const step = challenge.steps[stepIndex]!;
 
@@ -64,14 +67,20 @@ function ProblemLab() {
     if (index === step.answer) setCorrect((n) => n + 1);
   }
 
-  function next() {
-    if (stepIndex === challenge.steps.length - 1) setComplete(true);
+  async function next() {
+    if (stepIndex === challenge.steps.length - 1) {
+      setComplete(true);
+      setLoadingFeedback(true);
+      const result = await getProblemLabFeedback({ correct: correct + (picked === step.answer ? 1 : 0), total: challenge.steps.length, techniques: challenge.steps.map((item) => item.technique) });
+      setFeedback(result);
+      setLoadingFeedback(false);
+    }
     else { setStepIndex((n) => n + 1); setPicked(null); }
   }
 
   function reset(nextChallenge = false) {
     if (nextChallenge) setChallengeIndex((n) => (n + 1) % challenges.length);
-    setStepIndex(0); setPicked(null); setCorrect(0); setComplete(false);
+    setStepIndex(0); setPicked(null); setCorrect(0); setComplete(false); setFeedback(null); setLoadingFeedback(false);
   }
 
   return (
@@ -91,7 +100,8 @@ function ProblemLab() {
           <Target className="mx-auto mb-4 h-9 w-9 text-primary" />
           <h2 className="text-3xl font-semibold">Challenge complete</h2>
           <p className="mt-2 text-muted-foreground">You made {correct} of {challenge.steps.length} sound problem-solving choices.</p>
-          <p className="mx-auto mt-4 max-w-lg text-sm text-muted-foreground">The goal is not to guess the fastest answer. It is to make your assumptions visible and choose evidence that can change your mind.</p>
+          {loadingFeedback ? <p className="mx-auto mt-4 max-w-lg text-sm text-muted-foreground">Preparing your coaching feedback…</p> : feedback && <div className="mx-auto mt-5 max-w-lg space-y-4 text-left"><div className="rounded-lg bg-secondary p-4"><p className="font-mono text-xs uppercase tracking-widest text-primary">Your learning score</p><p className="mt-1 text-3xl font-semibold">{feedback.score} <span className="text-base font-normal text-muted-foreground">/ 5</span></p></div><div><p className="font-medium">What went well</p><ul className="mt-1 list-disc pl-5 text-sm text-muted-foreground">{feedback.strengths.map((strength) => <li key={strength}>{strength}</li>)}</ul></div><div><p className="font-medium">Focus next</p><p className="mt-1 text-sm text-muted-foreground">{feedback.focusNext}</p></div><div><p className="font-medium">Recommended practice</p><p className="mt-1 text-sm text-muted-foreground">{feedback.nextPractice}</p></div></div>}
+          {!loadingFeedback && <p className="mx-auto mt-4 max-w-lg text-sm text-muted-foreground">The goal is not to guess the fastest answer. It is to make your assumptions visible and choose evidence that can change your mind.</p>}
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Button variant="outline" onClick={() => reset()}><RotateCcw className="h-4 w-4" />Try again</Button>
             <Button onClick={() => reset(true)}>Next challenge <ArrowRight className="h-4 w-4" /></Button>

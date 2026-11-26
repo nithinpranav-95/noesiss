@@ -11,6 +11,32 @@ export type Feedback = {
   focusNext: string;
 };
 
+export type ProblemLabFeedback = {
+  score: number;
+  strengths: string[];
+  focusNext: string;
+  nextPractice: string;
+};
+
+/** Learning feedback seam. Replace the evaluator body with the server-side AI coach. */
+export async function getProblemLabFeedback(input: {
+  correct: number;
+  total: number;
+  techniques: string[];
+}): Promise<ProblemLabFeedback> {
+  const score = Math.round((input.correct / Math.max(input.total, 1)) * 5 * 10) / 10;
+  const strengths = input.correct > 0
+    ? [`You made ${input.correct} evidence-based choice${input.correct === 1 ? "" : "s"}.`, `You practised ${input.techniques.join(", ")}.`]
+    : ["You completed the exercise and exposed where the reasoning needs more practice."];
+
+  return {
+    score,
+    strengths,
+    focusNext: score >= 4 ? "Make your assumptions explicit before choosing a solution." : "Define the problem in observable terms before proposing a solution.",
+    nextPractice: score >= 4 ? "Try the Issue Tree lesson and test your branches with evidence." : "Repeat this challenge, then write down what would change your mind.",
+  };
+}
+
 /** PLACEHOLDER: would create a session row and start the opponent. */
 export async function startDebate(config: DebateConfig): Promise<{ sessionId: string; config: DebateConfig }> {
   return { sessionId: `mock-${Date.now()}`, config };
