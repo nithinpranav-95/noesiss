@@ -1,6 +1,7 @@
 // PLACEHOLDER FUNCTIONS — no voice, AI, or scoring logic lives here yet.
 // Replace these with real implementations later; the UI already calls them.
 import { fallacies } from "./mock-data";
+import { getProblemLabLlmFeedbackServer } from "./server/problem-lab";
 
 export type DebateConfig = { topicId: string; side: "for" | "against"; difficulty: "easy" | "medium" | "hard"; sideSwap: boolean };
 export type Turn = { speaker: "you" | "opponent"; text: string; round: number };
@@ -18,23 +19,13 @@ export type ProblemLabLlmFeedback = {
   nextPractice: string;
 };
 
-/** LLM feedback seam. Replace the evaluator body with the server-side LLM coach. */
+/** Browser-safe seam for the server-side LLM coach. */
 export async function getProblemLabLlmFeedback(input: {
   correct: number;
   total: number;
   techniques: string[];
 }): Promise<ProblemLabLlmFeedback> {
-  const score = Math.round((input.correct / Math.max(input.total, 1)) * 5 * 10) / 10;
-  const strengths = input.correct > 0
-    ? [`You made ${input.correct} evidence-based choice${input.correct === 1 ? "" : "s"}.`, `You practised ${input.techniques.join(", ")}.`]
-    : ["You completed the exercise and exposed where the reasoning needs more practice."];
-
-  return {
-    score,
-    strengths,
-    focusNext: score >= 4 ? "Make your assumptions explicit before choosing a solution." : "Define the problem in observable terms before proposing a solution.",
-    nextPractice: score >= 4 ? "Try the Issue Tree lesson and test your branches with evidence." : "Repeat this challenge, then write down what would change your mind.",
-  };
+  return getProblemLabLlmFeedbackServer({ data: input });
 }
 
 /** PLACEHOLDER: would create a session row and start the opponent. */
