@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Check, RotateCcw, Sparkles, Target } from "lucide-react";
 import { OpenPractice } from "@/components/app/OpenPractice";
 import { useServerFn } from "@tanstack/react-start";
@@ -15,9 +15,10 @@ import { getProblemLabLlmFeedback, type ProblemLabLlmFeedback } from "@/lib/plac
 
 export const Route = createFileRoute("/practice")({
   head: () => meta("Problem lab", "Practise defining problems, finding causes and choosing sensible next steps."),
-  validateSearch: (search: Record<string, unknown>): { mode?: Mode } => {
+  validateSearch: (search: Record<string, unknown>): { mode?: Mode; fresh?: boolean } => {
     const m = search["mode"];
-    return m === "critique" || m === "socratic" || m === "guided" ? { mode: m } : {};
+    const fresh = search["fresh"] === true || search["fresh"] === "true" || search["fresh"] === 1 || search["fresh"] === "1";
+    return { ...(m === "critique" || m === "socratic" || m === "guided" ? { mode: m } : {}), ...(fresh ? { fresh: true } : {}) };
   },
   component: ProblemLab,
 });
@@ -66,7 +67,8 @@ const starterChallenges: Challenge[] = [
 ];
 
 function ProblemLab() {
-  const mode: Mode = Route.useSearch().mode ?? "guided";
+  const search = Route.useSearch();
+  const mode: Mode = search.mode ?? "guided";
   const navigate = Route.useNavigate();
   const [challenges, setChallenges] = useState<Challenge[]>(starterChallenges);
   const [generating, setGenerating] = useState(false);
@@ -111,6 +113,15 @@ function ProblemLab() {
       toast.error("Couldn't create a new challenge right now.");
     } finally { setGenerating(false); }
   }
+
+  const freshStarted = useRef(false);
+  useEffect(() => {
+    if (!search.fresh || freshStarted.current) return;
+    freshStarted.current = true;
+    void navigate({ to: ".", search: (prev) => (prev.mode ? { mode: prev.mode } : {}), replace: true });
+    void newChallenge();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.fresh]);
 
   function reset(nextChallenge = false) {
     if (nextChallenge) setChallengeIndex((n) => (n + 1) % challenges.length);

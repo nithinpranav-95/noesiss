@@ -35,7 +35,7 @@ function Home() {
         <h1 className="max-w-2xl text-4xl font-semibold leading-tight sm:text-5xl">{todaysSession.title}</h1>
         <p className="mt-4 max-w-xl text-muted-foreground">{todaysSession.detail}</p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Button asChild size="lg"><Link to="/practice">Throw me a problem <ArrowRight className="h-4 w-4" /></Link></Button>
+          <Button asChild size="lg"><Link to="/practice" search={{ fresh: true }}>Throw me a problem <ArrowRight className="h-4 w-4" /></Link></Button>
           <Button asChild size="lg" variant="outline"><Link to="/plan">See this week's plan</Link></Button>
         </div>
         <div aria-hidden className="pointer-events-none absolute -right-6 -bottom-10 font-display text-[11rem] leading-none text-primary/10">?</div>
