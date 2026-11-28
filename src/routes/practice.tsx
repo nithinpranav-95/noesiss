@@ -109,7 +109,7 @@ function ProblemLab() {
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Challenge {challengeIndex + 1} of {challenges.length} · {challenge.title}</p>
         <div className="flex items-center gap-3"><p className="text-sm text-muted-foreground">{correct} correct so far</p>
-          <Button size="sm" variant="outline" onClick={newChallenge} disabled={generating}><Sparkles className="h-4 w-4" />{generating ? "Creating…" : "New AI challenge"}</Button></div>
+          <Button size="sm" variant="outline" onClick={newChallenge} disabled={generating}><Sparkles className="h-4 w-4" />{generating ? "Creating…" : "New challenge"}</Button></div>
       </div>
       <Progress value={complete ? 100 : ((stepIndex + 1) / challenge.steps.length) * 100} className="mb-6" />
       <Card className="mb-6 bg-secondary"><CardContent className="p-6">
