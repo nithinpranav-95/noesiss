@@ -3,8 +3,8 @@ import { navItems } from "@/components/app/AppNav";
 import { todaysSession } from "@/lib/mock-data";
 
 describe("Product focus", () => {
-  it("keeps debate as the last main navigation destination", () => {
-    expect(navItems.at(-1)?.to).toBe("/debate");
+  it("keeps the paused debate feature out of main navigation", () => {
+    expect(navItems.some((item) => item.to.startsWith("/debate"))).toBe(false);
   });
 
   it("makes the daily session a problem-solving activity", () => {

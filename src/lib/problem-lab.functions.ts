@@ -13,3 +13,10 @@ export const getProblemLabLlmFeedbackServer = createServerFn({ method: "POST" })
     const { generateProblemLabLlmFeedback } = await import("./llm.server");
     return generateProblemLabLlmFeedback(data);
   });
+export const generateProblemLabChallengeServer = createServerFn({ method: "POST" })
+  .inputValidator(z.object({ avoidTitles: z.array(z.string()).max(50) }))
+  .handler(async ({ data }) => {
+    const { generateProblemLabChallenge } = await import("./llm.server");
+    const challenge = await generateProblemLabChallenge(data);
+    return challenge ? { challenge, error: null } : { challenge: null, error: "Couldn't create a new challenge right now." };
+  });

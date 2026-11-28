@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowRight, Check, RotateCcw, Target } from "lucide-react";
+import { ArrowRight, Check, RotateCcw, Sparkles, Target } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { generateProblemLabChallengeServer } from "@/lib/problem-lab.functions";
+import { toast } from "sonner";
 import { PageHeader } from "@/components/app/AppNav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,7 +20,7 @@ export const Route = createFileRoute("/practice")({
 type ChallengeStep = { stage: string; prompt: string; options: string[]; answer: number; explanation: string; technique: string };
 type Challenge = { id: string; title: string; scenario: string; steps: ChallengeStep[] };
 
-const challenges: Challenge[] = [
+const starterChallenges: Challenge[] = [
   {
     id: "cafe", title: "The weekend sales dip",
     scenario: "A café's weekend revenue has fallen 20% for three weeks. Weekday sales are stable. The owner wants to cut every price by 15% immediately.",
@@ -51,6 +54,9 @@ const challenges: Challenge[] = [
 ];
 
 function ProblemLab() {
+  const [challenges, setChallenges] = useState<Challenge[]>(starterChallenges);
+  const [generating, setGenerating] = useState(false);
+  const generateChallenge = useServerFn(generateProblemLabChallengeServer);
   const [challengeIndex, setChallengeIndex] = useState(0);
   const [stepIndex, setStepIndex] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
@@ -78,6 +84,20 @@ function ProblemLab() {
     else { setStepIndex((n) => n + 1); setPicked(null); }
   }
 
+  async function newChallenge() {
+    setGenerating(true);
+    try {
+      const result = await generateChallenge({ data: { avoidTitles: challenges.map((c) => c.title) } });
+      if (!result.challenge) { toast.error(result.error ?? "Couldn't create a new challenge right now."); return; }
+      const created: Challenge = { id: `ai-${challenges.length}`, ...result.challenge };
+      setChallenges((list) => [...list, created]);
+      setChallengeIndex(challenges.length);
+      setStepIndex(0); setPicked(null); setCorrect(0); setComplete(false); setFeedback(null); setLoadingFeedback(false);
+    } catch {
+      toast.error("Couldn't create a new challenge right now.");
+    } finally { setGenerating(false); }
+  }
+
   function reset(nextChallenge = false) {
     if (nextChallenge) setChallengeIndex((n) => (n + 1) % challenges.length);
     setStepIndex(0); setPicked(null); setCorrect(0); setComplete(false); setFeedback(null); setLoadingFeedback(false);
@@ -88,7 +108,8 @@ function ProblemLab() {
       <PageHeader eyebrow="Problem lab" title="Solve before you jump" description="Practise a repeatable approach: define the real problem, test possible causes, then choose a measured next step." />
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Challenge {challengeIndex + 1} of {challenges.length} · {challenge.title}</p>
-        <p className="text-sm text-muted-foreground">{correct} correct so far</p>
+        <div className="flex items-center gap-3"><p className="text-sm text-muted-foreground">{correct} correct so far</p>
+          <Button size="sm" variant="outline" onClick={newChallenge} disabled={generating}><Sparkles className="h-4 w-4" />{generating ? "Creating…" : "New AI challenge"}</Button></div>
       </div>
       <Progress value={complete ? 100 : ((stepIndex + 1) / challenge.steps.length) * 100} className="mb-6" />
       <Card className="mb-6 bg-secondary"><CardContent className="p-6">

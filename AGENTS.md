@@ -34,3 +34,4 @@ use the editor.
 - All UI reads mock content from `src/lib/mock-data.ts`; swap to database reads per screen later. Why: the shell was built UI-first.
 - `startDebate`, `submitTurn`, `getFeedback` live in `src/lib/placeholders.ts` as stubs; voice, AI and scoring must replace them there, not inline in routes. Why: one seam for backend work.
 - Content tables are public-read; user tables are scoped to `auth.uid()` via RLS (scores/fallacy_events through their session). Why: content is shared, progress is private.
+- AI calls go through `generateJson` in `src/lib/llm.server.ts`: Lovable AI gateway, then OpenAI via `OPENAI_API_KEY`, then a local fallback/null. Why: one provider-failover chain for every AI feature.

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { generateResponse } from "@lovable.dev/ai-gateway";
 
 export const ProblemLabLlmFeedbackSchema = z.object({
   score: z.number().min(1).max(5),
@@ -6,76 +7,104 @@ export const ProblemLabLlmFeedbackSchema = z.object({
   focusNext: z.string().min(1),
   nextPractice: z.string().min(1),
 });
-
 export type ProblemLabLlmFeedback = z.infer<typeof ProblemLabLlmFeedbackSchema>;
-export type LlmProvider = "anthropic" | "openai";
 
-type LlmRequest = {
-  provider: LlmProvider;
-  model: string;
-  system: string;
-  input: string;
+export const GeneratedChallengeSchema = z.object({
+  title: z.string().min(1),
+  scenario: z.string().min(1),
+  steps: z.array(z.object({
+    stage: z.enum(["Define", "Diagnose", "Decide"]),
+    prompt: z.string().min(1),
+    technique: z.string().min(1),
+    options: z.array(z.string().min(1)).length(3),
+    answer: z.number().int().min(0).max(2),
+    explanation: z.string().min(1),
+  })).length(3),
+});
+export type GeneratedChallenge = z.infer<typeof GeneratedChallengeSchema>;
+
+type JsonSchema = Record<string, unknown>;
+const str = { type: "string" };
+const feedbackJsonSchema: JsonSchema = {
+  type: "object", additionalProperties: false, required: ["score", "strengths", "focusNext", "nextPractice"],
+  properties: { score: { type: "number" }, strengths: { type: "array", items: str }, focusNext: str, nextPractice: str },
+};
+const challengeJsonSchema: JsonSchema = {
+  type: "object", additionalProperties: false, required: ["title", "scenario", "steps"],
+  properties: {
+    title: str, scenario: str,
+    steps: { type: "array", items: {
+      type: "object", additionalProperties: false,
+      required: ["stage", "prompt", "technique", "options", "answer", "explanation"],
+      properties: { stage: { type: "string", enum: ["Define", "Diagnose", "Decide"] }, prompt: str, technique: str, options: { type: "array", items: str }, answer: { type: "integer" }, explanation: str },
+    } },
+  },
 };
 
-const feedbackSystem = `You are a practical problem-solving coach. Evaluate the learner's completed Problem Lab exercise. Return only valid JSON with this shape: {"score": number from 1 to 5, "strengths": string[], "focusNext": string, "nextPractice": string}. Keep the feedback specific, encouraging and concise.`;
-
-export async function generateProblemLabLlmFeedback(input: {
-  correct: number;
-  total: number;
-  techniques: string[];
-}): Promise<ProblemLabLlmFeedback> {
-  for (const provider of configuredProviders()) {
+/** Provider chain: Lovable AI first, then OpenAI (OPENAI_API_KEY), then null so callers use a local fallback. */
+async function generateJson<T>(opts: { name: string; system: string; input: string; schema: JsonSchema; parse: (v: unknown) => T }): Promise<T | null> {
+  try {
+    const response = await generateResponse({
+      model: "openai/gpt-6-astra",
+      instructions: opts.system,
+      input: [{ role: "user", content: `${opts.input}\nRespond with JSON.` }],
+      text: { format: { type: "json_schema", name: opts.name, schema: opts.schema, strict: true } },
+    });
+    return opts.parse(JSON.parse(extractResponseText(response)));
+  } catch (error) {
+    console.error(`Lovable AI ${opts.name} failed, trying OpenAI`, error);
+  }
+  const key = process.env["OPENAI_API_KEY"];
+  if (key) {
     try {
-      const raw = await callLlm({
-        provider,
-        model: provider === "anthropic" ? process.env["ANTHROPIC_MODEL"] ?? "claude-sonnet-4-5" : process.env["OPENAI_MODEL"] ?? "gpt-4o-mini",
-        system: feedbackSystem,
-        input: `The learner completed ${input.correct} of ${input.total} decisions correctly. Techniques practised: ${input.techniques.join(", ")}. Give feedback on the learning process, not intelligence or personality.`,
+      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: `Bearer ${key}` },
+        body: JSON.stringify({
+          model: process.env["OPENAI_MODEL"] ?? "gpt-4o-mini",
+          response_format: { type: "json_schema", json_schema: { name: opts.name, schema: opts.schema, strict: true } },
+          messages: [{ role: "system", content: opts.system }, { role: "user", content: opts.input }],
+        }),
       });
-      return ProblemLabLlmFeedbackSchema.parse(JSON.parse(extractJson(raw)));
+      if (!res.ok) throw new Error(`OpenAI request failed with ${res.status}`);
+      const body = (await res.json()) as { choices?: { message?: { content?: string } }[] };
+      return opts.parse(JSON.parse(body.choices?.[0]?.message?.content ?? ""));
     } catch (error) {
-      console.error(`${provider} Problem Lab feedback failed`, error);
+      console.error(`OpenAI ${opts.name} failed, using local fallback`, error);
     }
   }
-  return fallbackFeedback(input);
+  return null;
 }
 
-function configuredProviders(): LlmProvider[] {
-  const requested = process.env["NOESIS_LLM_PROVIDER"] as LlmProvider | undefined;
-  const available = ["anthropic", "openai"].filter((provider) => process.env[provider === "anthropic" ? "ANTHROPIC_API_KEY" : "OPENAI_API_KEY"]) as LlmProvider[];
-  if (requested && available.includes(requested)) return [requested, ...available.filter((provider) => provider !== requested)];
-  return available;
+function extractResponseText(response: unknown): string {
+  const r = response as { output_text?: string; output?: { content?: { type?: string; text?: string }[] }[] };
+  if (typeof r.output_text === "string" && r.output_text) return r.output_text;
+  return (r.output ?? []).flatMap((o) => o.content ?? []).filter((c) => c.type === "output_text").map((c) => c.text ?? "").join("");
 }
 
-async function callLlm(request: LlmRequest): Promise<string> {
-  if (request.provider === "anthropic") {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "content-type": "application/json", "x-api-key": process.env["ANTHROPIC_API_KEY"]!, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({ model: request.model, max_tokens: 400, system: request.system, messages: [{ role: "user", content: request.input }] }),
-    });
-    if (!response.ok) throw new Error(`Anthropic request failed with ${response.status}`);
-    const body = await response.json() as { content?: { text?: string }[] };
-    return body.content?.map((item) => item.text ?? "").join("") ?? "";
-  }
-
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: { "content-type": "application/json", authorization: `Bearer ${process.env["OPENAI_API_KEY"]!}` },
-    body: JSON.stringify({ model: request.model, temperature: 0.2, response_format: { type: "json_object" }, messages: [{ role: "system", content: request.system }, { role: "user", content: request.input }] }),
+export async function generateProblemLabLlmFeedback(input: { correct: number; total: number; techniques: string[] }): Promise<ProblemLabLlmFeedback> {
+  const result = await generateJson({
+    name: "problem_lab_feedback",
+    system: "You are a practical problem-solving coach. Evaluate the learner's completed Problem Lab exercise. score is 1-5; give 1-3 strengths. Keep feedback specific, encouraging and concise, about the process, not intelligence or personality.",
+    input: `The learner completed ${input.correct} of ${input.total} decisions correctly. Techniques practised: ${input.techniques.join(", ")}.`,
+    schema: feedbackJsonSchema,
+    parse: (v) => ProblemLabLlmFeedbackSchema.parse(v),
   });
-  if (!response.ok) throw new Error(`OpenAI request failed with ${response.status}`);
-  const body = await response.json() as { choices?: { message?: { content?: string } }[] };
-  return body.choices?.[0]?.message?.content ?? "";
+  return result ?? fallbackFeedback(input);
 }
 
-function extractJson(value: string): string {
-  const fenced = value.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
-  return (fenced?.[1] ?? value).trim();
+export async function generateProblemLabChallenge(input: { avoidTitles: string[] }): Promise<GeneratedChallenge | null> {
+  return generateJson({
+    name: "problem_lab_challenge",
+    system: "You write short, realistic everyday problem-solving exercises (work, small business, home, community). Each has a 2-3 sentence scenario where someone is tempted to jump to a solution, and exactly 3 steps in order: Define, Diagnose, Decide. Each step has a question, a named technique (e.g. Problem framing, Issue tree, Five Whys, Decision matrix, Inversion, Small experiments), exactly 3 plausible options, the 0-based index of the best one (vary its position), and a one-to-two sentence explanation. No debate topics.",
+    input: `Create one new challenge. Avoid these existing titles: ${input.avoidTitles.join("; ") || "none"}.`,
+    schema: challengeJsonSchema,
+    parse: (v) => GeneratedChallengeSchema.parse(v),
+  });
 }
 
 function fallbackFeedback(input: { correct: number; total: number; techniques: string[] }): ProblemLabLlmFeedback {
-  const score = Math.round((input.correct / Math.max(input.total, 1)) * 5 * 10) / 10;
+  const score = Math.max(1, Math.round((input.correct / Math.max(input.total, 1)) * 5 * 10) / 10);
   return {
     score,
     strengths: input.correct > 0 ? [`You made ${input.correct} evidence-based choice${input.correct === 1 ? "" : "s"}.`, `You practised ${input.techniques.join(", ")}.`] : ["You completed the exercise and exposed where the reasoning needs more practice."],

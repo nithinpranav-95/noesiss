@@ -1,6 +1,6 @@
 import type * as React from "react";
 import { Link } from "@tanstack/react-router";
-import { Home, Lightbulb, Mic, Puzzle, BookOpen, BarChart3, Settings } from "lucide-react";
+import { Home, Lightbulb, Puzzle, BookOpen, BarChart3, Settings } from "lucide-react";
 
 export const navItems = [
   { to: "/", label: "Home", icon: Home },
@@ -8,7 +8,6 @@ export const navItems = [
   { to: "/games", label: "Games", icon: Puzzle },
   { to: "/learn", label: "Learn", icon: BookOpen },
   { to: "/progress", label: "Progress", icon: BarChart3 },
-  { to: "/debate", label: "Debate", icon: Mic },
 ] as const;
 
 export function AppNav() {
@@ -33,7 +32,7 @@ export function AppNav() {
           </Link>
         </div>
       </aside>
-      <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 grid grid-cols-6 border-t bg-card">
+      <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 grid grid-cols-5 border-t bg-card">
         {navItems.map(({ to, label, icon: Icon }) => (
           <Link key={to} to={to} activeOptions={{ exact: to === "/" }}
             className="flex flex-col items-center gap-1 px-1 py-2 text-[10px] text-muted-foreground"

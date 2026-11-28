@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Mic, Puzzle, BookOpen, BarChart3, Flame, ArrowRight, Lightbulb } from "lucide-react";
+import { Puzzle, BookOpen, BarChart3, Flame, ArrowRight, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { todaysSession } from "@/lib/mock-data";
@@ -55,16 +55,6 @@ function Home() {
             </Link>
           ))}
         </div>
-      </section>
-      <section className="border-t pt-8">
-        <p className="mb-3 font-mono text-xs uppercase tracking-widest text-muted-foreground">Advanced practice · optional</p>
-        <Link to="/debate" className="group block">
-          <Card className="transition-colors group-hover:border-primary"><CardContent className="flex items-center gap-4 p-5">
-            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-secondary"><Mic className="h-5 w-5 text-primary" /></div>
-            <div className="flex-1"><p className="font-display text-xl font-semibold">Structured debate</p><p className="text-sm text-muted-foreground">Apply your reasoning skills by defending a position and testing another view.</p></div>
-            <ArrowRight className="h-5 w-5 text-muted-foreground" />
-          </CardContent></Card>
-        </Link>
       </section>
       <p className="text-sm text-muted-foreground">New here? <Link to="/onboarding" className="text-primary underline">Start onboarding</Link></p>
     </div>
