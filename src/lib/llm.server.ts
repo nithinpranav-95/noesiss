@@ -112,3 +112,51 @@ function fallbackFeedback(input: { correct: number; total: number; techniques: s
     nextPractice: score >= 4 ? "Try the Issue Tree lesson and test your branches with evidence." : "Repeat this challenge, then write down what would change your mind.",
   };
 }
+
+export const ApproachCritiqueSchema = z.object({
+  score: z.number().min(1).max(5),
+  strengths: z.array(z.string()).min(1).max(3),
+  blindSpots: z.array(z.string()).min(1).max(3),
+  technique: z.string().min(1),
+  techniqueWalkthrough: z.array(z.string()).min(2).max(5),
+  betterFirstMove: z.string().min(1),
+  twist: z.string().min(1),
+});
+export type ApproachCritique = z.infer<typeof ApproachCritiqueSchema>;
+const critiqueJsonSchema: JsonSchema = {
+  type: "object", additionalProperties: false,
+  required: ["score", "strengths", "blindSpots", "technique", "techniqueWalkthrough", "betterFirstMove", "twist"],
+  properties: { score: { type: "number" }, strengths: { type: "array", items: str }, blindSpots: { type: "array", items: str }, technique: str, techniqueWalkthrough: { type: "array", items: str }, betterFirstMove: str, twist: str },
+};
+
+export const TwistReviewSchema = z.object({
+  adaptabilityScore: z.number().min(1).max(5),
+  whatImproved: z.string().min(1),
+  stillMissing: z.string().min(1),
+  keyLesson: z.string().min(1),
+});
+export type TwistReview = z.infer<typeof TwistReviewSchema>;
+const twistJsonSchema: JsonSchema = {
+  type: "object", additionalProperties: false, required: ["adaptabilityScore", "whatImproved", "stillMissing", "keyLesson"],
+  properties: { adaptabilityScore: { type: "number" }, whatImproved: str, stillMissing: str, keyLesson: str },
+};
+
+export async function critiqueApproach(input: { scenario: string; approach: string }): Promise<ApproachCritique | null> {
+  return generateJson({
+    name: "approach_critique",
+    system: "You are a demanding but kind problem-solving coach. The learner wrote, in their own words, their first approach to a scenario. Judge their actual text. score 1-5. strengths: 1-3 specific things they did well (quote or paraphrase them). blindSpots: 1-3 concrete gaps (e.g. jumped to a solution, untested assumption, symptom vs cause, missing data, confirmation bias). technique: the single most useful named technique (Problem framing, Issue tree, Five Whys, First principles, Decision matrix, Inversion, Small experiments). techniqueWalkthrough: 2-5 short steps applying that technique to THIS scenario concretely. betterFirstMove: one sentence describing a stronger first move. twist: one realistic new fact (1-2 sentences) that challenges their approach, ending with a question. If the text is empty or off-topic, score 1 and say so. Never write debate content.",
+    input: `Scenario: ${input.scenario}\n\nLearner's approach:\n${input.approach}`,
+    schema: critiqueJsonSchema,
+    parse: (v) => ApproachCritiqueSchema.parse(v),
+  });
+}
+
+export async function reviewTwistResponse(input: { scenario: string; approach: string; twist: string; revision: string }): Promise<TwistReview | null> {
+  return generateJson({
+    name: "twist_review",
+    system: "You are a problem-solving coach. The learner gave a first approach, then got a new fact (the twist) and revised their plan. Judge how well they updated their thinking using their actual words. adaptabilityScore 1-5. whatImproved, stillMissing, keyLesson: one or two concrete sentences each.",
+    input: `Scenario: ${input.scenario}\n\nFirst approach:\n${input.approach}\n\nTwist: ${input.twist}\n\nRevised approach:\n${input.revision}`,
+    schema: twistJsonSchema,
+    parse: (v) => TwistReviewSchema.parse(v),
+  });
+}

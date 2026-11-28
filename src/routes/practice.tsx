@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowRight, Check, RotateCcw, Sparkles, Target } from "lucide-react";
+import { OpenPractice } from "@/components/app/OpenPractice";
 import { useServerFn } from "@tanstack/react-start";
 import { generateProblemLabChallengeServer } from "@/lib/problem-lab.functions";
 import { toast } from "sonner";
@@ -14,8 +15,19 @@ import { getProblemLabLlmFeedback, type ProblemLabLlmFeedback } from "@/lib/plac
 
 export const Route = createFileRoute("/practice")({
   head: () => meta("Problem lab", "Practise defining problems, finding causes and choosing sensible next steps."),
+  validateSearch: (search: Record<string, unknown>): { mode?: Mode } => {
+    const m = search["mode"];
+    return m === "critique" || m === "socratic" || m === "guided" ? { mode: m } : {};
+  },
   component: ProblemLab,
 });
+
+type Mode = "guided" | "critique" | "socratic";
+const modes: { id: Mode; label: string; hint: string }[] = [
+  { id: "guided", label: "Guided steps", hint: "Pick the best option at each step" },
+  { id: "critique", label: "Open critique", hint: "Write your approach, get a deep review" },
+  { id: "socratic", label: "Socratic drill", hint: "Write, get reviewed, then adapt to a twist" },
+];
 
 type ChallengeStep = { stage: string; prompt: string; options: string[]; answer: number; explanation: string; technique: string };
 type Challenge = { id: string; title: string; scenario: string; steps: ChallengeStep[] };
@@ -54,6 +66,8 @@ const starterChallenges: Challenge[] = [
 ];
 
 function ProblemLab() {
+  const mode: Mode = Route.useSearch().mode ?? "guided";
+  const navigate = Route.useNavigate();
   const [challenges, setChallenges] = useState<Challenge[]>(starterChallenges);
   const [generating, setGenerating] = useState(false);
   const generateChallenge = useServerFn(generateProblemLabChallengeServer);
@@ -108,15 +122,25 @@ function ProblemLab() {
       <PageHeader eyebrow="Problem lab" title="Solve before you jump" description="Practise a repeatable approach: define the real problem, test possible causes, then choose a measured next step." />
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Challenge {challengeIndex + 1} of {challenges.length} · {challenge.title}</p>
-        <div className="flex items-center gap-3"><p className="text-sm text-muted-foreground">{correct} correct so far</p>
+        <div className="flex items-center gap-3">{mode === "guided" && <p className="text-sm text-muted-foreground">{correct} correct so far</p>}
           <Button size="sm" variant="outline" onClick={newChallenge} disabled={generating}><Sparkles className="h-4 w-4" />{generating ? "Creating…" : "New challenge"}</Button></div>
       </div>
-      <Progress value={complete ? 100 : ((stepIndex + 1) / challenge.steps.length) * 100} className="mb-6" />
+      <div role="tablist" aria-label="Practice format" className="mb-5 grid gap-2 sm:grid-cols-3">
+        {modes.map((m) => (
+          <button key={m.id} role="tab" aria-selected={mode === m.id} onClick={() => navigate({ to: ".", search: { mode: m.id } })}
+            className={cn("rounded-lg border-2 p-3 text-left transition-colors", mode === m.id ? "border-primary bg-primary/5" : "bg-card hover:border-primary/50")}>
+            <p className="font-medium">{m.label}</p><p className="text-xs text-muted-foreground">{m.hint}</p>
+          </button>
+        ))}
+      </div>
+      {mode === "guided" && <Progress value={complete ? 100 : ((stepIndex + 1) / challenge.steps.length) * 100} className="mb-6" />}
       <Card className="mb-6 bg-secondary"><CardContent className="p-6">
         <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">The situation</p>
         <p className="mt-2 text-lg leading-relaxed">{challenge.scenario}</p>
       </CardContent></Card>
-      {complete ? (
+      {mode !== "guided" ? (
+        <OpenPractice key={`${mode}-${challenge.id}`} scenario={challenge.scenario} socratic={mode === "socratic"} onNext={() => reset(true)} />
+      ) : complete ? (
         <Card><CardContent className="p-8 text-center">
           <Target className="mx-auto mb-4 h-9 w-9 text-primary" />
           <h2 className="text-3xl font-semibold">Challenge complete</h2>

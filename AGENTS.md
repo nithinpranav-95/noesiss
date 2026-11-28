@@ -35,3 +35,4 @@ use the editor.
 - `startDebate`, `submitTurn`, `getFeedback` live in `src/lib/placeholders.ts` as stubs; voice, AI and scoring must replace them there, not inline in routes. Why: one seam for backend work.
 - Content tables are public-read; user tables are scoped to `auth.uid()` via RLS (scores/fallacy_events through their session). Why: content is shared, progress is private.
 - AI calls go through `generateJson` in `src/lib/llm.server.ts`: Lovable AI gateway, then OpenAI via `OPENAI_API_KEY`, then a local fallback/null. Why: one provider-failover chain for every AI feature.
+- Problem Lab offers three formats via `?mode=` (guided | critique | socratic) while the user compares them; open formats live in `src/components/app/OpenPractice.tsx`. Why: user is A/B-testing formats before keeping one.
