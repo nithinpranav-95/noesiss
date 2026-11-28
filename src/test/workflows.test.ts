@@ -3,6 +3,18 @@ import { frameworks, frameworkProgress, weakSpots } from "@/lib/mock-data";
 import { chooseNextActivity, completePracticeSession, createPracticeSession, updateFrameworkProgress, updateWeakSpot } from "@/lib/workflows";
 
 describe("learning workflows", () => {
+  it("creates a practice session without an optional framework", () => {
+    const session = createPracticeSession({ type: "problem-lab", title: "Problem", description: "Practise" });
+    expect(session.activityType).toBe("problem-lab");
+    expect(session).not.toHaveProperty("frameworkId");
+    expect(session.startedAt).toBeDefined();
+  });
+
+  it("preserves the framework when creating a lesson session", () => {
+    const session = createPracticeSession({ type: "lesson", title: "Five Whys", description: "Practise", frameworkId: "five-whys" });
+    expect(session.frameworkId).toBe("five-whys");
+  });
+
   it("chooses the least-mastered framework for the next activity", () => {
     const activity = chooseNextActivity({ sessionsCompleted: 0, frameworkProgress, weakSpots }, frameworks);
     expect(activity.type).toBe("lesson");
@@ -22,6 +34,6 @@ describe("learning workflows", () => {
     const next = updateWeakSpot(progress, "steelman", 4);
     expect(next.sessionsCompleted).toBe(1);
     expect(next.frameworkProgress.find((item) => item.id === "steelman")?.times).toBe(1);
-    expect(next.weakSpots.find((item) => item.ref === "steelman")?.severity).toBe(0.2);
+    expect(next.weakSpots.find((item) => item.ref === "steelman")?.severity).toBeCloseTo(0.2);
   });
 });

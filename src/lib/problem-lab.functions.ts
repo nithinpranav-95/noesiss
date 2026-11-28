@@ -1,6 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { generateProblemLabLlmFeedback } from "@/lib/llm";
 
 const inputSchema = z.object({
   correct: z.number().int().min(0),
@@ -10,4 +9,7 @@ const inputSchema = z.object({
 
 export const getProblemLabLlmFeedbackServer = createServerFn({ method: "POST" })
   .inputValidator(inputSchema)
-  .handler(({ data }) => generateProblemLabLlmFeedback(data));
+  .handler(async ({ data }) => {
+    const { generateProblemLabLlmFeedback } = await import("./llm.server");
+    return generateProblemLabLlmFeedback(data);
+  });

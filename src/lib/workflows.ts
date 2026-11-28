@@ -37,7 +37,7 @@ export function createPracticeSession(activity: LearningActivity): PracticeSessi
   return {
     id: `session-${Date.now()}`,
     activityType: activity.type,
-    frameworkId: activity.frameworkId,
+    ...(activity.frameworkId !== undefined ? { frameworkId: activity.frameworkId } : {}),
     startedAt: new Date().toISOString(),
   };
 }

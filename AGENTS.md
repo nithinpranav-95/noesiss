@@ -30,6 +30,7 @@ use the editor.
 <!-- LOVABLE:END -->
 
 ## Project rules
+- Keep callable server functions in client-safe `src/lib/*.functions.ts` modules and load secret-bearing `*.server.ts` helpers inside handlers. Why: browser imports must resolve to RPC stubs without bundling server-only code.
 - All UI reads mock content from `src/lib/mock-data.ts`; swap to database reads per screen later. Why: the shell was built UI-first.
 - `startDebate`, `submitTurn`, `getFeedback` live in `src/lib/placeholders.ts` as stubs; voice, AI and scoring must replace them there, not inline in routes. Why: one seam for backend work.
 - Content tables are public-read; user tables are scoped to `auth.uid()` via RLS (scores/fallacy_events through their session). Why: content is shared, progress is private.

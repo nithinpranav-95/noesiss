@@ -1,7 +1,7 @@
 // PLACEHOLDER FUNCTIONS — no voice, AI, or scoring logic lives here yet.
 // Replace these with real implementations later; the UI already calls them.
 import { fallacies } from "./mock-data";
-import { getProblemLabLlmFeedbackServer } from "./server/problem-lab";
+import { getProblemLabLlmFeedbackServer } from "./problem-lab.functions";
 
 export type DebateConfig = { topicId: string; side: "for" | "against"; difficulty: "easy" | "medium" | "hard"; sideSwap: boolean };
 export type Turn = { speaker: "you" | "opponent"; text: string; round: number };
